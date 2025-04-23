@@ -1,0 +1,200 @@
+<!DOCTYPE html>
+<html lang="ru">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Переводчик</title>
+    <style>
+        html, body {
+            height: 100%;
+            margin: 0;
+            padding: 0;
+            font-family: 'Segoe UI', Arial, sans-serif;
+            background: linear-gradient(120deg, #89f7fe 0%, #66a6ff 100%);
+            min-height: 100vh;
+        }
+        body {
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            min-height: 100vh;
+        }
+        .container {
+            width: 100%;
+            max-width: 410px;
+            margin: 0 auto;
+            background: rgba(255,255,255,0.97);
+            padding: 38px 24px 24px 24px;
+            border-radius: 20px;
+            box-shadow: 0 12px 24px 0 #7edbff40, 0 2px 10px #469eff23;
+            display: flex;
+            flex-direction: column;
+            align-items: center;
+            backdrop-filter: blur(6px);
+            border: 1.5px solid #e0f0ff;
+        }
+        h1 {
+            text-align: center;
+            margin-bottom: 22px;
+            color: #3390ff;
+            font-weight: bold;
+            font-size: 2.3rem;
+            letter-spacing: 1.5px;
+            text-shadow: 0 1px 3px #eaf6ff80;
+        }
+        .input-group, .output-group {
+            width: 100%;
+            margin-bottom: 19px;
+        }
+        label {
+            display: block;
+            margin-bottom: 7px;
+            font-weight: 600;
+            color: #3777c6;
+        }
+        select, textarea {
+            width: 100%;
+            padding: 11px;
+            border: 1.7px solid #bfe6ff;
+            border-radius: 8px;
+            font-size: 1rem;
+            box-sizing: border-box;
+            background: #f8fbff;
+            color: #28324b;
+            margin-bottom: 3px;
+            transition: border-color 0.2s;
+        }
+        select:focus, textarea:focus {
+            outline: none;
+            border-color: #319aff;
+            background: #f2faff;
+        }
+        textarea {
+            min-height: 80px;
+            resize: vertical;
+        }
+        button {
+            width: 100%;
+            background: linear-gradient(90deg, #53b2ff 0%, #319aff 100%);
+            color: white;
+            padding: 13px 0;
+            border: none;
+            border-radius: 8px;
+            cursor: pointer;
+            font-size: 1.13rem;
+            font-weight: bold;
+            margin-bottom: 10px;
+            transition: background 0.25s, box-shadow 0.15s;
+            box-shadow: 0 3px 16px #7cd6ff2f;
+        }
+        button:hover {
+            background: linear-gradient(90deg, #319aff 0%, #53b2ff 100%);
+            box-shadow: 0 6px 20px #90e3ff3e;
+        }
+        .output-group {
+            margin-top: 9px;
+        }
+    </style>
+</head>
+<body>
+    <div class="container">
+        <h1>Переводчик</h1>
+        <div class="input-group">
+            <label for="sourceLang">Исходный язык:</label>
+            <select id="sourceLang">
+                <option value="auto">Автоопределение</option>
+                <option value="en">Английский</option>
+                <option value="ru">Русский</option>
+            </select>
+        </div>
+        <div class="input-group">
+            <label for="targetLang">Язык перевода:</label>
+            <select id="targetLang">
+                <option value="en">Английский</option>
+                <option value="ru">Русский</option>
+            </select>
+        </div>
+        <div class="input-group">
+            <label for="inputText">Текст для перевода:</label>
+            <textarea id="inputText"></textarea>
+        </div>
+        <button id="translateBtn">Перевести</button>
+        <div class="output-group">
+            <label for="outputText">Перевод:</label>
+            <textarea id="outputText" readonly></textarea>
+        </div>
+    </div>
+    <script>
+        document.addEventListener('DOMContentLoaded', function() {
+            const translateButton = document.getElementById('translateBtn');
+            const inputText = document.getElementById('inputText');
+            const outputText = document.getElementById('outputText');
+            const sourceLangSelect = document.getElementById('sourceLang');
+            const targetLangSelect = document.getElementById('targetLang');
+
+            // Мини-база переводов в обе стороны
+            const translations = {
+                "привет": "hello",
+                "hello": "привет",
+                "спасибо": "thank you",
+                "thank you": "спасибо",
+                "как дела": "how are you",
+                "how are you": "как дела",
+                "добрый день": "good afternoon",
+                "good afternoon": "добрый день",
+                "до свидания": "goodbye",
+                "goodbye": "до свидания",
+                "я люблю тебя": "i love you",
+                "i love you": "я люблю тебя"
+            };
+
+            translateButton.addEventListener('click', function() {
+                const textToTranslate = inputText.value.toLowerCase().trim();
+                const sourceLang = sourceLangSelect.value;
+                const targetLang = targetLangSelect.value;
+
+                if (textToTranslate === '') {
+                    outputText.value = 'Пожалуйста, введите текст для перевода.';
+                    return;
+                }
+
+                // Проверяем, есть ли перевод в мини-базе
+                if (translations.hasOwnProperty(textToTranslate)) {
+                   
+                    outputText.value = translations[textToTranslate];
+                    return;
+                }
+
+                outputText.value = 'Переводим...';
+
+                fetch('https://translate.astian.org/translate', {
+                    method: 'POST',
+                    headers: {
+                        'Content-Type': 'application/json'
+                    },
+                    body: JSON.stringify({
+                        q: textToTranslate,
+                        source: sourceLang,
+                        target: targetLang,
+                        format: 'text'
+                    })
+                })
+                .then(response => response.json())
+                .then(data => {
+                    if (data && data.translatedText) {
+                        outputText.value = data.translatedText;
+                    } else if (data.error) {
+                        outputText.value = 'Ошибка перевода: ' + data.error;
+                    } else {
+                        outputText.value = 'Ошибка перевода.';
+                    }
+                })
+                .catch(error => {
+                    console.error('Ошибка:', error);
+                    outputText.value = 'Ошибка перевода. Проверьте подключение к интернету или попробуйте позже.';
+                });
+            });
+        });
+    </script>
+</body>
+</html>

@@ -1,0 +1,98 @@
+html, body {
+    height: 100%;
+    margin: 0;
+    padding: 0;
+    font-family: 'Segoe UI', Arial, sans-serif;
+    background: linear-gradient(120deg, #89f7fe 0%, #66a6ff 100%);
+    min-height: 100vh;
+}
+
+body {
+    min-height: 100vh;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+}
+
+.container {
+    width: 100%;
+    max-width: 380px;
+    margin: 0 auto;
+    background: rgba(255, 255, 255, 0.92);
+    padding: 32px 24px;
+    border-radius: 18px;
+    box-shadow: 0 10px 24px rgba(80, 150, 200, 0.16), 0 1.5px 8px rgba(60, 110, 180, 0.13);
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    backdrop-filter: blur(2px);
+}
+
+h1 {
+    text-align: center;
+    margin-bottom: 24px;
+    color: #3484fa;
+    font-weight: 900;
+    font-size: 2.1rem;
+    letter-spacing: 2px;
+    text-shadow: 0 1px 2px #e1eaff50;
+}
+
+.input-group, .output-group {
+    width: 100%;
+    margin-bottom: 18px;
+}
+
+label {
+    display: block;
+    margin-bottom: 7px;
+    font-weight: 600;
+    color: #528ddb;
+    letter-spacing: .5px;
+}
+
+select, textarea {
+    width: 100%;
+    padding: 12px;
+    border: 1.5px solid #cbe5ff;
+    border-radius: 8px;
+    font-size: 1rem;
+    box-sizing: border-box;
+    transition: border-color 0.2s;
+    background: #f8fbff;
+    color: #28324b;
+}
+
+select:focus, textarea:focus {
+    outline: none;
+    border-color: #3484fa;
+}
+
+textarea {
+    min-height: 80px;
+    resize: vertical;
+}
+
+button {
+    width: 100%;
+    background: linear-gradient(90deg, #5dade2 0%, #3484fa 100%);
+    color: white;
+    padding: 12px 0;
+    border: none;
+    border-radius: 8px;
+    cursor: pointer;
+    font-size: 1.12rem;
+    font-weight: 700;
+    transition: background 0.18s, box-shadow 0.18s;
+    box-shadow: 0 2px 6px #b8dfff50;
+    margin-bottom: 10px;
+}
+
+button:hover {
+    background: linear-gradient(90deg, #3484fa 0%, #5dade2 100%);
+    box-shadow: 0 4px 12px #7cc7ff33;
+}
+
+.output-group {
+    margin-top: 12px;
+}
